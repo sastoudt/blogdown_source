@@ -1,0 +1,85 @@
+## Basic Configuration
+
+baseurl = "https://sastoudt.github.io/" 
+builddrafts = false
+canonifyurls = false
+languageCode = "en-US"
+
+contentdir = "content"
+layoutdir = "layouts"
+publishdir = "sastoudt.github.io"
+
+author = "Sara A. Stoudt"
+title = "Sara A. Stoudt"
+
+theme = "hugo-goa"
+
+## Hugo Built-in Features
+#disqusShortname = "https-shenoybr-github-io-hugo-goa-demo" # Comment out to disable Disqus.
+googleAnalytics = "XYZ"
+enableRobotsTXT = true
+
+## Site Settings
+[params]
+author = "Sara A. Stoudt"
+intro = "4th Year Statistics PhD Student"
+description = "UC Berkeley, BIDS Data Science Fellow, Smith College Alumna"
+authorimage = "headshot.jpg"
+dateformat = "Jan 2, 2006"
+
+## Site Meta Settings
+[params.meta]
+description = "Simple minimalist theme"
+keywords = "minimalist,blog,goa,hugo,developer"
+
+## Social Accounts
+[params.social]
+github = "sastoudt"
+#instagram = "<username>"
+#xing = "<username>"
+#linkedin = "<username>"
+twitter = "@sastoudt"
+#facebook = "<username>"
+#google = "<username>"
+#stackoverflow = "<username>"
+email = "sstoudt@berkeley.edu"
+
+## Extras
+[params.extra]
+#copyright = "© 2016. Erlich Bachman. [Some Rights Reserved](http://creativecommons.org/licenses/by/3.0/)." 
+poweredby = true
+highlightjs = true
+
+## Main Menu
+
+[[menu.main]]
+    name = "about"
+    identifier = "about"
+    weight = 100
+    url = "/about/"
+[[menu.main]]
+    name = "research"
+    identifier = "research"
+    weight = 150
+    url = "/research/"    
+[[menu.main]]
+    name = "teaching"
+    identifier = "teaching"
+    weight = 200
+    url = "/teaching/"
+[[menu.main]]
+    name = "CV"
+    identifier = "CV"
+    weight = 250
+    url = "/CV/"    
+[[menu.main]]
+    name = "blog"
+    weight = 300
+    identifier = "blog"
+    url = "/blog/"   
+[[menu.main]]
+    name = "writing"
+    weight = 350
+    identifier = "writing"
+    url = "/writing/"      
+
