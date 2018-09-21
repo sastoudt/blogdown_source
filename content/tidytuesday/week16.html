@@ -1,0 +1,81 @@
+---
+title: "Week 16: Exercise USA"
+date: 2018-07-17T10:38:18-07:00
+draft: true
+---
+
+
+
+<div id="week-16" class="section level1">
+<h1>Week 16</h1>
+<p><a href="https://www.cdc.gov/">CDC</a></p>
+<p><a href="https://www.cdc.gov/nchs/data/nhsr/nhsr112.pdf">CDC - National Health Statistics Reports</a>|</p>
+<pre class="r"><code>require(readxl)
+require(dplyr)
+require(ggplot2)
+require(stringr)
+require(tidyr)
+require(geofacet)
+require(viridis)</code></pre>
+<pre class="r"><code>setwd(&quot;~/Desktop/tidytuesday/data/2018-07-17&quot;)
+exercise=read_excel(&quot;week16_exercise.xlsx&quot;,sheet=1)
+
+exercise=exercise[,-1] ## remove count
+exercise=exercise[-1,] ## remove &quot;all states&quot;&quot;
+
+exerciseT=exercise %&gt;% gather(type, value,-state)
+exerciseT$value=as.numeric(exerciseT$value)</code></pre>
+<pre><code>## Warning: NAs introduced by coercion</code></pre>
+<div id="you-better-work" class="section level2">
+<h2>You Better Work</h2>
+<p>I expected that working men and women would have less time to exercise, but it looks like those who work meet the federal guidelines for exercise more across the US.</p>
+<p>Some potential reasons:</p>
+<ul>
+<li>physical and financial access to gyms for workers</li>
+<li>caretaking responsibilities for those “non-workers” prevent exercise</li>
+<li>jobs that involve physical labor count as exercise? nope, CDC says “leisure-time physical activity”</li>
+<li>seeing coworkers on a daily basis motivates you to exercise</li>
+</ul>
+<pre class="r"><code>ggplot(subset(exerciseT,type %in% c(&quot;men_nonworking&quot;,&quot;men_working&quot;,&quot;women_nonworking&quot;,&quot;women_working&quot;)),aes(x=type,y=value,fill=type))+ geom_bar(stat=&quot;identity&quot;,position = position_dodge2(preserve = &quot;total&quot;))+facet_geo(~state)+ theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())</code></pre>
+<p><img src="/tidytuesday/week16_files/figure-html/unnamed-chunk-3-1.png" width="1344" /></p>
+</div>
+<div id="where-are-the-largestsmallest-disparities" class="section level2">
+<h2>Where are the largest/smallest disparities?</h2>
+<p>In honor of the theme of sweating, I mean exercise, I’m switching to the inferno palette.</p>
+<pre class="r"><code>exercise[2:ncol(exercise)]=apply(exercise[2:ncol(exercise)],2,function(x){as.numeric(x)})
+
+counties= map_data(&quot;county&quot;)
+state=map_data(&quot;state&quot;)
+
+exercise$state=tolower(exercise$state)
+
+all_state=inner_join(state,exercise,by=c(&quot;region&quot;=&quot;state&quot;))</code></pre>
+<p>What’s striking here is that there is only one negative value. Only in New Hampshire do women meet the guidelines more than men. In DC, the difference between genders is largest, while Montana has the smallest difference.</p>
+<pre class="r"><code>ggplot(data=state,mapping=aes(x=long,y=lat,group=group))+geom_polygon(data=all_state, aes(fill=men-women),color=&quot;grey&quot;)+labs(fill=&quot;men - women&quot;)+scale_fill_viridis(option=&quot;inferno&quot;)+theme_void()+geom_path(data=state, aes(x=long,y=lat,group=group),color=&quot;black&quot;)+ggtitle(&quot;Battle of the Sexes&quot;)</code></pre>
+<p><img src="/tidytuesday/week16_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>exercise$state[which(exercise$men-exercise$women&lt;0)]</code></pre>
+<pre><code>## [1] &quot;new hampshire&quot;</code></pre>
+<pre class="r"><code>exercise$state[which.max(abs(exercise$men-exercise$women))] </code></pre>
+<pre><code>## [1] &quot;district of columbia&quot;</code></pre>
+<pre class="r"><code>exercise$state[which.min(abs(exercise$men-exercise$women))] </code></pre>
+<pre><code>## [1] &quot;montana&quot;</code></pre>
+<p>In South Dakota and Nebraska nonworking men meet the guidelines more than working men. Vermont has the biggest disparity while Iowa has the smallest.</p>
+<pre class="r"><code>ggplot(data=state,mapping=aes(x=long,y=lat,group=group))+geom_polygon(data=all_state, aes(fill=men_working-men_nonworking),color=&quot;grey&quot;)+labs(fill=&quot;menWork-menNonwork&quot;)+scale_fill_viridis(option=&quot;inferno&quot;)+theme_void()+geom_path(data=state, aes(x=long,y=lat,group=group),color=&quot;black&quot;)+ggtitle(&quot;Working(?) Men&quot;)</code></pre>
+<p><img src="/tidytuesday/week16_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<pre class="r"><code>exercise$state[which.max(abs(exercise$men_working-exercise$men_nonworking))] </code></pre>
+<pre><code>## [1] &quot;vermont&quot;</code></pre>
+<pre class="r"><code>exercise$state[which.min(abs(exercise$men_working-exercise$men_nonworking))] </code></pre>
+<pre><code>## [1] &quot;iowa&quot;</code></pre>
+<p>In Idaho and Utah nonworking women meet the guidelines more than working women. Wyoming has the biggest disparity while Oklahoma has the smallest.</p>
+<pre class="r"><code>ggplot(data=state,mapping=aes(x=long,y=lat,group=group))+geom_polygon(data=all_state, aes(fill=women_working-women_nonworking),color=&quot;grey&quot;)+labs(fill=&quot;womenWork-womenNonwork&quot;)+scale_fill_viridis(option=&quot;inferno&quot;)+theme_void()+geom_path(data=state, aes(x=long,y=lat,group=group),color=&quot;black&quot;)+ggtitle(&quot;Working(?) Women&quot;)</code></pre>
+<p><img src="/tidytuesday/week16_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code>exercise$state[which(exercise$women_working-exercise$women_nonworking&lt;0)]</code></pre>
+<pre><code>## [1] &quot;idaho&quot; &quot;utah&quot;</code></pre>
+<pre class="r"><code>exercise$state[which.max(abs(exercise$women_working-exercise$women_nonworking))] </code></pre>
+<pre><code>## [1] &quot;wyoming&quot;</code></pre>
+<pre class="r"><code>exercise$state[which.min(abs(exercise$women_working-exercise$women_nonworking))] </code></pre>
+<pre><code>## [1] &quot;oklahoma&quot;</code></pre>
+</div>
+</div>

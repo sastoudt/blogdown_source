@@ -78,6 +78,11 @@ highlightjs = true
     identifier = "blog"
     url = "/blog/"   
 [[menu.main]]
+    name = "tidy tuesday"
+    weight = 325
+    identifier = "tidytuesday"
+    url = "/tidytuesday/"     
+[[menu.main]]
     name = "writing"
     weight = 350
     identifier = "writing"

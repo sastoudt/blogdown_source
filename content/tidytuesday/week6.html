@@ -1,0 +1,112 @@
+---
+title: "Week 6: Global Coffee Chains"
+date: 2018-05-07T09:53:05-07:00
+draft: true
+---
+
+
+
+<div id="fueled-by-dunkin" class="section level2">
+<h2>Fueled By Dunkin</h2>
+<div id="week-6---global-coffee-chain-locations-as-of-2017-or-2018" class="section level3">
+<h3>Week 6 - Global coffee-chain locations (as of 2017 or 2018)</h3>
+<p><a href="https://github.com/rfordatascience/tidytuesday/blob/master/data/week6_coffee_chains.xlsx">RAW DATA</a><br />
+<a href="http://flowingdata.com/2014/03/18/coffee-place-geography/">Article</a><br />
+<a href="https://www.kaggle.com/starbucks/store-locations">DataSource (Starbucks): kaggle.com</a><br />
+<a href="https://locations.timhortons.com/">DataSource (Tim Horton): timhortons.com</a><br />
+<a href="http://www.odditysoftware.com/download/download.php?filename=dunkin-donuts.zip">DataSource (Dunkin Donuts): odditysoftware.com</a></p>
+<pre class="r"><code>require(readxl)
+require(dplyr)
+require(maps)
+require(ggmap)
+require(fields)
+require(sf)</code></pre>
+<pre class="r"><code>setwd(&quot;~/Desktop/tidytuesday/data/2018-05-07&quot;)
+
+coffee1=read_excel(&quot;week6_coffee_chains.xlsx&quot;,sheet=1)
+coffee2=read_excel(&quot;week6_coffee_chains.xlsx&quot;,sheet=2)
+coffee3=read_excel(&quot;week6_coffee_chains.xlsx&quot;,sheet=3)
+
+## all have different columns
+
+starbucksUS=subset(coffee1,Country==&quot;US&quot;)
+dunkinUS=subset(coffee3,e_country==&quot;USA&quot;) ## all in US so not really needed</code></pre>
+<div id="how-far-do-i-need-to-walkdrive-to-get-my-fix" class="section level4">
+<h4>How far do I need to walk/drive to get my fix?</h4>
+<p>I’m putting my personal biases into this, so I“m only looking at Dunkin and Starbucks within the US.</p>
+<pre class="r"><code>getMeToCoffee&lt;-function(myPoint,modePrefer,coffeePrefer){
+  if(is.character(myPoint)){
+    myPoint2=geocode(myPoint,output=&quot;latlon&quot;)
+    
+  }
+
+  if(coffeePrefer==&quot;dunkin&quot;){
+    toDunkin=rdist(as.matrix(myPoint2),dunkinUS[,c(&quot;loc_LONG_centroid&quot;,&quot;loc_LAT_centroid&quot;)])
+    closestDunkin=which.min(toDunkin)
+    tryThis=paste(dunkinUS$&quot;e_address&quot;[closestDunkin], dunkinUS$e_city[closestDunkin],&quot;,&quot;,dunkinUS$e_state[closestDunkin],sep=&quot; &quot;)
+    test= mapdist(myPoint,tryThis, mode = modePrefer,
+                  output = &quot;simple&quot;, messaging = FALSE, sensor = FALSE,
+                  language = &quot;en-EN&quot;, override_limit = FALSE)
+    ## does better with character addresses than lat longs
+    
+  }else if(coffeePrefer==&quot;starbucks&quot;){
+    toStarbucks=rdist(myPoint2,starbucksUS[,c(&quot;Longitude&quot;,&quot;Latitude&quot;)])
+    closestStarbucks=which.min(toStarbucks)
+   
+    tryThis=paste(starbucksUS[closestStarbucks,&quot;Street Address&quot;], starbucksUS$City[closestStarbucks],&quot;,&quot;,starbucksUS[closestStarbucks,&quot;State/Province&quot;],sep=&quot; &quot;)
+   test= mapdist(myPoint,tryThis, mode = modePrefer,
+         output = &quot;simple&quot;, messaging = FALSE, sensor = FALSE,
+            language = &quot;en-EN&quot;, override_limit = FALSE)
+  }
+  else{
+    test=NA
+  }
+  
+  return(test)
+  
+}</code></pre>
+<pre class="r"><code>getMeToCoffee(&quot;Indiana, PA&quot;,&quot;driving&quot;,&quot;dunkin&quot;) ## home
+getMeToCoffee(&quot;100 Bureau Drive, Gaithersburg MD&quot;,&quot;driving&quot;,&quot;dunkin&quot;) ## NIST address
+getMeToCoffee(&quot;Smith College, Northampton MA&quot;,&quot;walking&quot;,&quot;dunkin&quot;) 
+getMeToCoffee(&quot;Evans Hall, Berkeley CA&quot;,&quot;driving&quot;,&quot;dunkin&quot;) </code></pre>
+<p><img src="https://github.com/sastoudt/tidytuesday/blob/master/week6/dunkin1.png"></p>
+<p><img src="https://github.com/sastoudt/tidytuesday/blob/master/week6/dunkin2.png"></p>
+<p><img src="https://github.com/sastoudt/tidytuesday/blob/master/week6/dunkin3.png"></p>
+<p><img src="https://github.com/sastoudt/tidytuesday/blob/master/week6/dunkin4.png"></p>
+<p><strong>Note:</strong> We actually do have a Dunkin in good-ole Indiana, PA so all is not lost.</p>
+<pre class="r"><code>#map(&quot;county&quot;,&quot;pennsylvania&quot;)
+#points(coffee3$loc_LONG_centroid,coffee3$loc_LAT_centroid,col=&quot;orange&quot;)
+#https://ryanpeek.github.io/2017-11-05-mapping-with-sf-Part-2/
+#https://github.com/tidyverse/ggplot2/issues/2071
+
+paDunkin=subset(coffee3,e_state==&quot;PA&quot;)
+PA&lt;-us_states( states = &quot;pennsylvania&quot;) 
+ggplot()+geom_sf(data=PA,color=&quot;black&quot;,fill=NA)+geom_point(data=paDunkin,aes(x=loc_LONG_centroid,y=loc_LAT_centroid))+theme_void()+theme(panel.grid.major = element_line(colour = &quot;white&quot;))</code></pre>
+<p><img src="/tidytuesday/week6_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><strong>Plenty</strong></p>
+<pre class="r"><code>#map(&quot;county&quot;,&quot;maryland&quot;)
+#points(coffee3$loc_LONG_centroid,coffee3$loc_LAT_centroid,col=&quot;orange&quot;)
+
+mdDunkin=subset(coffee3,e_state==&quot;MD&quot;)
+MD&lt;-us_states( states = &quot;maryland&quot;) 
+ggplot()+geom_sf(data=MD,color=&quot;black&quot;,fill=NA)+geom_point(data=mdDunkin,aes(x=loc_LONG_centroid,y=loc_LAT_centroid))+theme_void()+theme(panel.grid.major = element_line(colour = &quot;white&quot;))</code></pre>
+<p><img src="/tidytuesday/week6_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><strong>Plenty</strong></p>
+<pre class="r"><code>#map(&quot;county&quot;,&quot;massachusetts&quot;)
+#points(coffee3$loc_LONG_centroid,coffee3$loc_LAT_centroid,col=&quot;orange&quot;)
+
+maDunkin=subset(coffee3,e_state==&quot;MA&quot;)
+MA&lt;-us_states( states = &quot;massachusetts&quot;) 
+ggplot()+geom_sf(data=MA,color=&quot;black&quot;,fill=NA)+geom_point(data=maDunkin,aes(x=loc_LONG_centroid,y=loc_LAT_centroid))+theme_void()+theme(panel.grid.major = element_line(colour = &quot;white&quot;))</code></pre>
+<p><img src="/tidytuesday/week6_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><strong>Book me a plane ticket!</strong></p>
+<pre class="r"><code>#map(&quot;county&quot;,&quot;california&quot;)
+#points(coffee3$loc_LONG_centroid,coffee3$loc_LAT_centroid,col=&quot;orange&quot;)
+
+caDunkin=subset(coffee3,e_state==&quot;CA&quot;)
+CA&lt;-us_states( states = &quot;california&quot;) 
+ggplot()+geom_sf(data=CA,color=&quot;black&quot;,fill=NA)+geom_point(data=caDunkin,aes(x=loc_LONG_centroid,y=loc_LAT_centroid))+theme_void()+theme(panel.grid.major = element_line(colour = &quot;white&quot;))</code></pre>
+<p><img src="/tidytuesday/week6_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
+</div>
+</div>
