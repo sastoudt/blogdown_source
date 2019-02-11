@@ -19,7 +19,13 @@ showpagemeta = false
 <br>
 
 
-We are interested in tracking plants and animals over time and space and understanding how their prevalence (proportion of area where they are found) and abundance (quantity) change. Collecting data is expensive, so it is important to know what data collection protocols we need to use in order to have enough information to estimate these quantities of interest. There has been controversy in the literature about the data quality resulting from certain protocols and the realism of certain model assumptions needed to estimate quantities of interest from this data. To clear up the controversy, we introduce different forms of identifiability from the econometrics literature and show why model misspecification can be especially dangerous when we have a weaker form of identifiability (parametric) instead of the strongest form (nonparametric). 
+Ecologists commonly make strong parametric assumptions when formulating statistical models. Such assumptions have sparked repeated debates in the literature about statistical identifiability of species distribution and abundance models, among others. At issue is whether the assumption of a particular parametric form serves to impose artificial statistical identifiability that should not be relied upon or instead whether such an assumption is part and parcel of statistical modeling. We borrow from the econometrics literature to introduce a broader view of the identifiability problem than has been taken in ecological debates. In particular we review the concept of nonparametric identifiability and show what can go wrong when we lack this strong form of identifiability, e.g. extreme sensitivity to model misspecification.
+
+Other ideas we are interested in thinking more about are:
+
+- accounting for correlation between species' occurrence and detection in joint species distribution and abundance models;
+- combining "good" data (that provides nonparametric identifiability) with "bad" data (that only provides parametric identifiability) to help recover robustness to model misspecification in species distribution and abundance models; and
+- making recommendations for data collection for species distribution and abundance models.
 <br>
 <br>
 <br>
