@@ -22,7 +22,7 @@ enableRobotsTXT = true
 ## Site Settings
 [params]
 author = "Sara A. Stoudt"
-intro = "4th Year Statistics PhD Student"
+intro = "5th Year Statistics PhD Student"
 description = "UC Berkeley, BIDS Data Science Fellow, Smith College Alumna"
 authorimage = "headshot.jpg"
 dateformat = "Jan 2, 2006"
@@ -87,4 +87,8 @@ highlightjs = true
     weight = 350
     identifier = "writing"
     url = "/writing/"      
-
+[[menu.main]]
+    name = "coding projects"
+    weight = 375
+    identifier = "coding"
+    url = "/coding/" 

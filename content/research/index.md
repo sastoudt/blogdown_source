@@ -26,6 +26,7 @@ Other ideas we are interested in thinking more about are:
 - accounting for correlation between species' occurrence and detection in joint species distribution and abundance models;
 - combining "good" data (that provides nonparametric identifiability) with "bad" data (that only provides parametric identifiability) to help recover robustness to model misspecification in species distribution and abundance models; and
 - making recommendations for data collection for species distribution and abundance models.
+- creating diagnostics to assess the fit of more complicated joint species distribution models
 <br>
 <br>
 <br>

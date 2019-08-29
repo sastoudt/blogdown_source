@@ -34,3 +34,8 @@ showpagemeta = false
 
 <a href="https://statsbites.wordpress.com/2018/04/20/what-does-probability-mean-anyway/">What does probability mean anyway?</a>: Statsbites
 
+
+<br>
+<br>
+
+<a href="http://www.covermesongs.com/author/sarastoudt"> Covermesongs </a>: I am a Features writer for the music blog Covermesongs that focuses on, you guessed it, covers.
