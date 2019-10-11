@@ -32,3 +32,9 @@ showpagemeta = false
 
 <a href="https://github.com/cabinetofcuriosity/coc_lewis_clark_workshop/"> Cabinet of Curiosity </a>: I play a supporting role in Ciera Martinez's natural history data <a href="https://curiositydata.org"> project </a>. She works with students to make natural history data acessible and visible to data scientists. 
 
+<a href="https://github.com/sastoudt/KidzBopLyrics">KidzBop Lyrics</a>: Inspired by a tweet from @waxpancacke, I created a quick visualization of the changes KidzBop singers make to the lyrics of the songs they cover.
+<br>
+<br>
+
+
+
